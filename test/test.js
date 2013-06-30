@@ -9,7 +9,6 @@ fs.writeFileSync('test-htmlls/file.txt', 'wee');
 
 var step = 0,
     stream = htmlls(process.cwd() + '/test-htmlls');
-
 stream.on('data', function (data) {
   if (data != null && typeof data != 'string') { data = data.toString(); }
   switch (step) {
@@ -25,14 +24,12 @@ stream.on('data', function (data) {
     case 3:
       assert.equal(data, '</ul>\n');
       break;
-    case 4:
-      assert.equal(data, null);
-      tearDown();
-      break;
   }
   step++;
 });
+stream.on('end', tearDown);
 function tearDown() {
+  assert.equal(step, 4);
   fs.unlinkSync('test-htmlls/file.txt');
   fs.unlinkSync('test-htmlls/dir/file.exe');
   fs.rmdirSync('test-htmlls/dir');
