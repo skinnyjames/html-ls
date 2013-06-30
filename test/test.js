@@ -16,10 +16,10 @@ stream.on('data', function (data) {
       assert.equal(data, '<ul>\n');
       break;
     case 1:
-      assert.ok(data.match(/dir\//));
+      assert.ok(data.match(/dir\//) || data.match(/file\.txt/));
       break;
     case 2:
-      assert.ok(data.match(/file.txt/));
+      assert.ok(data.match(/dir\//) || data.match(/file\.txt/));
       break;
     case 3:
       assert.equal(data, '</ul>\n');
