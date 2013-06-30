@@ -19,5 +19,9 @@
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jarofghosts/html-ls/issues"
+  },
+  "dependencies": {
+    "through": "~2.3.4",
+    "ls-stream": "0.0.3"
   }
 }
