@@ -2,7 +2,7 @@ var ls = require('ls-stream'),
     path = require('path'),
     through = require('through');
 
-function lsHtml(dir) {
+function lsHtml(dir, hideDot) {
   var stream = through();
 
   process.nextTick(go);
@@ -19,6 +19,7 @@ function lsHtml(dir) {
       }
       var objectName = path.basename(data.path) + (data.stat.isDirectory() ? '/' : ''),
           objectString = '<li><a href="' + objectName + '">' + objectName + '</a></li>\n';
+      if (hideDot && objectName.match(/^\./)) return;
       stream.queue(objectString);
     })
     .on('end', done);
