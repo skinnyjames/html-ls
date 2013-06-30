@@ -17,8 +17,8 @@ function lsHtml(dir) {
         done();
         return;
       }
-      var objectName = path.basename(data.path),
-          objectString = '<li><a href="' + objectName + '">' + objectName + (data.stat.isDirectory() ? '/' : '') + '</a></li>\n';
+      var objectName = path.basename(data.path) + (data.stat.isDirectory() ? '/' : ''),
+          objectString = '<li><a href="' + objectName + '">' + objectName + '</a></li>\n';
       stream.queue(objectString);
     });
   }
