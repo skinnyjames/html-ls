@@ -1,0 +1,23 @@
+{
+  "name": "html-ls",
+  "version": "0.0.0",
+  "description": "html ls",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jarofghosts/html-ls.git"
+  },
+  "keywords": [
+    "ls",
+    "html",
+    "stream"
+  ],
+  "author": "jesse keane",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jarofghosts/html-ls/issues"
+  }
+}
