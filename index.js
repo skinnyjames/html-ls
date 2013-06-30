@@ -20,7 +20,8 @@ function lsHtml(dir) {
       var objectName = path.basename(data.path) + (data.stat.isDirectory() ? '/' : ''),
           objectString = '<li><a href="' + objectName + '">' + objectName + '</a></li>\n';
       stream.queue(objectString);
-    });
+    })
+    .on('end', done);
   }
   function done() {
     stream.queue('</ul>\n');
