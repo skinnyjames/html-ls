@@ -5,10 +5,11 @@ var assert = require('assert'),
 fs.mkdirSync('test-htmlls');
 fs.mkdirSync('test-htmlls/dir');
 fs.writeFileSync('test-htmlls/dir/file.exe', 'blah');
+fs.writeFileSync('test-htmlls/.test', 'haha');
 fs.writeFileSync('test-htmlls/file.txt', 'wee');
 
 var step = 0,
-    stream = htmlls(process.cwd() + '/test-htmlls');
+    stream = htmlls(process.cwd() + '/test-htmlls', true);
 stream.on('data', function (data) {
   if (data != null && typeof data != 'string') { data = data.toString(); }
   switch (step) {
@@ -30,6 +31,7 @@ stream.on('data', function (data) {
 stream.on('end', tearDown);
 function tearDown() {
   assert.equal(step, 4);
+  fs.unlinkSync('test-htmlls/.test');
   fs.unlinkSync('test-htmlls/file.txt');
   fs.unlinkSync('test-htmlls/dir/file.exe');
   fs.rmdirSync('test-htmlls/dir');
