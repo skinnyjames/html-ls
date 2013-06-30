@@ -13,6 +13,10 @@ var htmlls = require('html-ls');
 htmlls('/var/www').pipe(process.stdout);
 ````
 
+## options
+
+Optionally, you can pass `true` as the second argument to hide dotfiles.
+
 ## license
 
 MIT
