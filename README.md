@@ -3,7 +3,7 @@ html-ls
 
 [![Build Status](https://travis-ci.org/jarofghosts/html-ls.png?branch=master)](https://travis-ci.org/jarofghosts/html-ls)
 
-make a pretty directory list
+html-ls makes a pretty directory list in html
 
 ## usage
 
