@@ -20,7 +20,7 @@ the optional second argument can contain an options object looking something lik
 ```js
 {
   hideDot: false,
-  upDir: false
+  showUp: false
 }
 ```
 
