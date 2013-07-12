@@ -1,6 +1,6 @@
 {
   "name": "html-ls",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "html ls",
   "main": "index.js",
   "scripts": {
