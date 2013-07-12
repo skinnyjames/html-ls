@@ -15,7 +15,14 @@ htmlls('/var/www').pipe(process.stdout);
 
 ## options
 
-Optionally, you can pass `true` as the second argument to hide dotfiles.
+the optional second argument can contain an options object looking something like this (with defaults noted):
+
+```js
+{
+  hideDot: false,
+  upDir: false
+}
+```
 
 ## license
 
