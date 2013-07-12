@@ -9,7 +9,7 @@ fs.writeFileSync('test-htmlls/.test', 'haha');
 fs.writeFileSync('test-htmlls/file.txt', 'wee');
 
 var step = 0,
-    stream = htmlls(process.cwd() + '/test-htmlls', true);
+    stream = htmlls(process.cwd() + '/test-htmlls', { hideDot: true, showUp: true });
 stream.on('data', function (data) {
   if (data != null && typeof data != 'string') { data = data.toString(); }
   switch (step) {
@@ -17,12 +17,15 @@ stream.on('data', function (data) {
       assert.equal(data, '<ul>\n');
       break;
     case 1:
-      assert.ok(data.match(/dir\//) || data.match(/file\.txt/));
+      assert.ok(data.match(/\.\./));
       break;
     case 2:
       assert.ok(data.match(/dir\//) || data.match(/file\.txt/));
       break;
     case 3:
+      assert.ok(data.match(/dir\//) || data.match(/file\.txt/));
+      break;
+    case 4:
       assert.equal(data, '</ul>\n');
       break;
   }
@@ -30,7 +33,7 @@ stream.on('data', function (data) {
 });
 stream.on('end', tearDown);
 function tearDown() {
-  assert.equal(step, 4);
+  assert.equal(step, 5);
   fs.unlinkSync('test-htmlls/.test');
   fs.unlinkSync('test-htmlls/file.txt');
   fs.unlinkSync('test-htmlls/dir/file.exe');
