@@ -23,13 +23,10 @@ function lsHtml(dir, options) {
     ls(dir)
       .on('data', function (data) {
         // if we receive a null or if we have recursed into a new dir, just terminate the stream
-        if (data == null || path.dirname(data.path) !== dir) {
-          done();
-          return;
-        }
+        if (data == null || path.dirname(data.path) !== dir) return done();
         var objectName = path.basename(data.path) + (data.stat.isDirectory() ? '/' : ''),
-            objectString = '<li><a href="' + objectName + '">' + objectName + '</a></li>\n';
-        if (hideDot && objectName.match(/^\./)) return;
+            objectString = ['<li><a href="', objectName, '">', objectName, '</a></li>\n'].join('');
+        if (hideDot && /^\./.test(objectName)) return;
         stream.queue(objectString);
       })
       .on('end', done);
@@ -41,3 +38,4 @@ function lsHtml(dir, options) {
 }
 
 module.exports = lsHtml;
+
