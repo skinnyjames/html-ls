@@ -5,8 +5,7 @@ var ls = require('ls-stream'),
 module.exports = lsHtml
 
 function lsHtml(dir, options) {
-  var hideDot = options.hideDot,
-      showUp = options.showUp,
+  var dotfile = /^\./,
       stream = through()
 
   options = options || {}
@@ -16,29 +15,38 @@ function lsHtml(dir, options) {
   return stream
 
   function go() {
+    var up_dir
+
     stream.queue('<ul>\n')
-    if (showUp) {
-      var upDir = path.dirname(dir) + '/'
-      stream.queue('<li><a href="' + upDir + '">..</a></li>\n')
+
+    if (options.showUp) {
+      up_dir = path.dirname(dir) + '/'
+      stream.queue('<li>' + '..'.link(up_dir) + '</li>\n')
     }
+
     ls(dir)
-      .on('data', function (data) {
-        if (data === null || path.dirname(data.path) !== dir) return done()
-        var objectName = path.basename(data.path) +
-              (data.stat.isDirectory() ? '/' : ''),
-            objectString = [
-              '<li><a href="',
-              objectName,
-              '">',
-              objectName,
-              '</a></li>\n'].join('')
-
-        if (hideDot && /^\./.test(objectName)) return
-
-        stream.queue(objectString)
-      })
+      .on('data', on_dir)
       .on('end', done)
+
+    function on_dir(data) {
+      if (!data || path.dirname(data.path) !== dir) return done()
+      if (options.hideDot && dotfile.test(path.basename(data.path))) return
+
+      var object_name = path.basename(data.path),
+          object_string
+
+      if (data.stat.isDirectory()) object_name += '/'
+ 
+      object_string = [
+        '<li>',
+        object_name.link(object_name),
+        '</li>\n'
+      ].join('')
+
+      stream.queue(object_string)
+    }
   }
+
   function done() {
     stream.queue('</ul>\n')
     stream.queue(null)

@@ -1,42 +1,33 @@
 var assert = require('assert'),
     htmlls = require('../index.js'),
-    fs = require('fs');
-
-fs.mkdirSync('test-htmlls');
-fs.mkdirSync('test-htmlls/dir');
-fs.writeFileSync('test-htmlls/dir/file.exe', 'blah');
-fs.writeFileSync('test-htmlls/.test', 'haha');
-fs.writeFileSync('test-htmlls/file.txt', 'wee');
+    fs = require('fs')
 
 var step = 0,
-    stream = htmlls(process.cwd() + '/test-htmlls', { hideDot: true, showUp: true });
+    stream = htmlls(process.cwd() + '/test-htmlls',
+      { hideDot: true, showUp: true })
 stream.on('data', function (data) {
-  if (data != null && typeof data != 'string') { data = data.toString(); }
+  data = data.toString()
   switch (step) {
     case 0:
-      assert.equal(data, '<ul>\n');
-      break;
+      assert.equal(data, '<ul>\n')
+      break
     case 1:
-      assert.ok(data.match(/\.\./));
-      break;
+      assert.ok(/\.\./.test(data))
+      break
     case 2:
-      assert.ok(data.match(/dir\//) || data.match(/file\.txt/));
-      break;
+      assert.ok(/dir\//.test(data) || /file\.txt/.test(data))
+      break
     case 3:
-      assert.ok(data.match(/dir\//) || data.match(/file\.txt/));
-      break;
+      assert.ok(/dir\//.test(data) || /file\.txt/.test(data))
+      break
     case 4:
-      assert.equal(data, '</ul>\n');
-      break;
+      assert.equal(data, '</ul>\n')
+      break
   }
-  step++;
-});
-stream.on('end', tearDown);
-function tearDown() {
-  assert.equal(step, 5);
-  fs.unlinkSync('test-htmlls/.test');
-  fs.unlinkSync('test-htmlls/file.txt');
-  fs.unlinkSync('test-htmlls/dir/file.exe');
-  fs.rmdirSync('test-htmlls/dir');
-  fs.rmdirSync('test-htmlls');
+  step++
+})
+
+stream.on('end', check)
+function check() {
+  assert.equal(step, 5)
 }
