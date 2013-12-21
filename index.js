@@ -11,11 +11,9 @@ function lsHtml(dir, options) {
 
   options = options || {}
 
-  if (setImmediate) {
-    setImmediate(go)
-  } else {
-    process.nextTick(go)
-  }
+  setImmediate = setImmediate || process.nextTick
+
+  setImmediate(go)
   
   return stream
 
