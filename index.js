@@ -36,12 +36,8 @@ function lsHtml(dir, options) {
           object_string
 
       if (data.stat.isDirectory()) object_name += '/'
- 
-      object_string = [
-        '<li>',
-        object_name.link(object_name),
-        '</li>\n'
-      ].join('')
+
+      object_string = '<li>' + object_name.link(object_name) + '</li>\n'
 
       stream.queue(object_string)
     }
