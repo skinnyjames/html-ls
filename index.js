@@ -1,14 +1,17 @@
-var ls = require('ls-stream'),
-    path = require('path'),
-    through = require('through')
+var path = require('path')
 
-module.exports = lsHtml
+var through = require('through')
+  , ls = require('ls-stream')
 
-function lsHtml(dir, options) {
-  var dotfile = /^\./,
-      stream = through()
+module.exports = ls_html
+
+function ls_html(dir, options) {
+  var stream = through()
+    , dotfile = /^\./
 
   options = options || {}
+  options.parentTag = options.parentTag || 'ul'
+  options.childTag = options.childTag || 'li'
 
   process.nextTick(go)
   
@@ -17,34 +20,58 @@ function lsHtml(dir, options) {
   function go() {
     var up_dir
 
-    stream.queue('<ul>\n')
+    var files = []
+      , dirs = []
 
-    if (options.showUp) {
+    stream.queue('<' + options.parentTag + '>\n')
+
+    if(options.showUp) {
       up_dir = path.dirname(dir) + '/'
-      stream.queue('<li>' + '..'.link(up_dir) + '</li>\n')
+      stream.queue(
+          '<' + options.childTag + '>' +
+          '..'.link(up_dir) +
+          '</' + options.childTag + '>\n'
+      )
     }
 
-    ls(dir)
-      .on('data', on_dir)
-      .on('end', done)
+    ls(dir).pipe(through(on_dir, done))
 
     function on_dir(data) {
-      if (!data || path.dirname(data.path) !== dir) return done()
-      if (options.hideDot && dotfile.test(path.basename(data.path))) return
+      if(!data || path.dirname(data.path) !== dir) return done()
+      if(options.hideDot && dotfile.test(path.basename(data.path))) return
 
-      var object_name = path.basename(data.path),
-          object_string
+      var object_name = path.basename(data.path)
+        , object_string
 
-      if (data.stat.isDirectory()) object_name += '/'
-
-      object_string = '<li>' + object_name.link(object_name) + '</li>\n'
-
-      stream.queue(object_string)
+      if(data.stat.isDirectory()) {
+        dirs.push(object_name + '/')
+      } else {
+        files.push(object_name)
+      }
     }
-  }
 
-  function done() {
-    stream.queue('</ul>\n')
-    stream.queue(null)
+    function done() {
+      var entities
+
+      if(options.dirsFirst) {
+        entities = dirs.sort().concat(files.sort())
+      } else {
+        entities = (dirs.concat(files)).sort()
+      }
+
+      for(var i = 0, l = entities.length; i < l; ++i) {
+        stream_item(entities[i])
+      }
+
+      stream.queue('</' + options.parentTag + '>\n')
+      stream.queue(null)
+
+      function stream_item(object_name) {
+        object_string = '<' + options.childTag + '>' +
+            object_name.link(object_name) + '</' + options.childTag + '>\n'
+
+        stream.queue(object_string)
+      }
+    }
   }
 }

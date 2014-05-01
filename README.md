@@ -3,15 +3,15 @@ html-ls
 
 [![Build Status](https://travis-ci.org/jarofghosts/html-ls.png?branch=master)](https://travis-ci.org/jarofghosts/html-ls)
 
-html-ls makes a pretty directory list (`<ul>`) in html!
+pretty print directory list in html
 
 ## usage
 
-````js
-var htmlls = require('html-ls');
+```js
+var htmlls = require('html-ls')
 
 htmlls('/var/www').pipe(process.stdout)
-````
+```
 
 ## options
 
@@ -20,13 +20,13 @@ like this (with defaults noted):
 
 ```js
 {
-  hideDot: false,
-  showUp: false
+  hideDot: false, // hide dotfiles from list
+  showUp: false, // show `..` at the top
+  dirsFirst: false, // put dirs at the top of the list, then files
+  parentTag: 'ul', // opening tag for list
+  childTag: 'li' // child element tag
 }
 ```
-
-`hideDot` will block the rendering of dotfiles, and `showUp` determines whether
-or not to show an entry for '..'
 
 ## license
 
