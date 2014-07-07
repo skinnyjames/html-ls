@@ -18,35 +18,34 @@ function ls_html(dir, options) {
   return stream
 
   function go() {
-    var up_dir
-
     var files = []
       , dirs = []
+      , upDir
 
     stream.queue('<' + options.parentTag + '>\n')
 
     if(options.showUp) {
-      up_dir = path.dirname(dir) + '/'
+      upDir = path.dirname(dir) + '/'
       stream.queue(
           '<' + options.childTag + '>' +
-          '..'.link(up_dir) +
+          '..'.link(upDir) +
           '</' + options.childTag + '>\n'
       )
     }
 
-    ls(dir).pipe(through(on_dir, done))
+    ls(dir).pipe(through(onDir, done))
 
-    function on_dir(data) {
+    function onDir(data) {
       if(!data || path.dirname(data.path) !== dir) return done()
       if(options.hideDot && dotfile.test(path.basename(data.path))) return
 
-      var object_name = path.basename(data.path)
-        , object_string
+      var objectName = path.basename(data.path)
+        , objectString
 
       if(data.stat.isDirectory()) {
-        dirs.push(object_name + '/')
+        dirs.push(objectName + '/')
       } else {
-        files.push(object_name)
+        files.push(objectName)
       }
     }
 
@@ -60,17 +59,17 @@ function ls_html(dir, options) {
       }
 
       for(var i = 0, l = entities.length; i < l; ++i) {
-        stream_item(entities[i])
+        streamItem(entities[i])
       }
 
       stream.queue('</' + options.parentTag + '>\n')
       stream.queue(null)
 
-      function stream_item(object_name) {
-        object_string = '<' + options.childTag + '>' +
-            object_name.link(object_name) + '</' + options.childTag + '>\n'
+      function streamItem(objectName) {
+        objectString = '<' + options.childTag + '>' +
+            objectName.link(objectName) + '</' + options.childTag + '>\n'
 
-        stream.queue(object_string)
+        stream.queue(objectString)
       }
     }
   }
