@@ -1,4 +1,5 @@
 var path = require('path')
+  , util = require('util')
 
 var through = require('through')
   , ls = require('ls-stream')
@@ -10,11 +11,12 @@ function lsHtml(dir, _options) {
     , dotfile = /^\./
 
   var options = _options || {}
+
   options.parentTag = options.parentTag || 'ul'
   options.childTag = options.childTag || 'li'
 
   process.nextTick(go)
-  
+
   return stream
 
   function go() {
@@ -22,15 +24,16 @@ function lsHtml(dir, _options) {
       , dirs = []
       , upDir
 
-    stream.queue('<' + options.parentTag + '>\n')
+    stream.queue(util.format('<%s>\n', options.parentTag))
 
     if(options.showUp) {
       upDir = path.dirname(dir) + '/'
-      stream.queue(
-          '<' + options.childTag + '>' +
-          '..'.link(upDir) +
-          '</' + options.childTag + '>\n'
-      )
+      stream.queue(util.format(
+          '<%s><a href="%s">..</a></%s>\n'
+        , options.childTag
+        , upDir
+        , options.childTag
+      ))
     }
 
     ls(dir).pipe(through(onDir, done))
@@ -40,13 +43,12 @@ function lsHtml(dir, _options) {
       if(options.hideDot && dotfile.test(path.basename(data.path))) return
 
       var objectName = path.basename(data.path)
-        , objectString
 
       if(data.stat.isDirectory()) {
-        dirs.push(objectName + '/')
-      } else {
-        files.push(objectName)
+        return dirs.push(objectName + '/')
       }
+
+      files.push(objectName)
     }
 
     function done() {
@@ -62,12 +64,17 @@ function lsHtml(dir, _options) {
         streamItem(entities[i])
       }
 
-      stream.queue('</' + options.parentTag + '>\n')
+      stream.queue(util.format('</%s>\n', options.parentTag))
       stream.queue(null)
 
       function streamItem(objectName) {
-        objectString = '<' + options.childTag + '>' +
-            objectName.link(objectName) + '</' + options.childTag + '>\n'
+        var objectString = util.format(
+            '<%s><a href="%s">%s</a></%s>\n'
+          , options.childTag
+          , objectName
+          , objectName
+          , options.childTag
+        )
 
         stream.queue(objectString)
       }
