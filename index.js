@@ -1,7 +1,7 @@
 var path = require('path')
   , util = require('util')
 
-var through = require('through')
+var through = require('through2')
   , ls = require('ls-stream')
 
 module.exports = lsHtml
@@ -24,11 +24,11 @@ function lsHtml(dir, _options) {
       , dirs = []
       , upDir
 
-    stream.queue(util.format('<%s>\n', options.parentTag))
+    stream.push(util.format('<%s>\n', options.parentTag))
 
     if(options.showUp) {
       upDir = path.dirname(dir) + '/'
-      stream.queue(util.format(
+      stream.push(util.format(
           '<%s><a href="%s">..</a></%s>\n'
         , options.childTag
         , upDir
@@ -36,19 +36,28 @@ function lsHtml(dir, _options) {
       ))
     }
 
-    ls(dir).pipe(through(onDir, done))
+    ls(dir).pipe(through.obj(onDir, done))
 
-    function onDir(data) {
-      if(!data || path.dirname(data.path) !== dir) return done()
-      if(options.hideDot && dotfile.test(path.basename(data.path))) return
+    function onDir(data, _, next) {
+      if(!data || path.dirname(data.path) !== dir) {
+        return done()
+      }
+
+      if(options.hideDot && dotfile.test(path.basename(data.path))) {
+        return next()
+      }
 
       var objectName = path.basename(data.path)
 
       if(data.stat.isDirectory()) {
-        return dirs.push(objectName + '/')
+        dirs.push(objectName + '/')
+
+        return next()
       }
 
       files.push(objectName)
+
+      next()
     }
 
     function done() {
@@ -64,8 +73,8 @@ function lsHtml(dir, _options) {
         streamItem(entities[i])
       }
 
-      stream.queue(util.format('</%s>\n', options.parentTag))
-      stream.queue(null)
+      stream.push(util.format('</%s>\n', options.parentTag))
+      stream.push(null)
 
       function streamItem(objectName) {
         var objectString = util.format(
@@ -76,7 +85,7 @@ function lsHtml(dir, _options) {
           , options.childTag
         )
 
-        stream.queue(objectString)
+        stream.push(objectString)
       }
     }
   }

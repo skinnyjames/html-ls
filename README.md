@@ -1,5 +1,4 @@
-html-ls
-====
+# html-ls
 
 [![Build Status](http://img.shields.io/travis/jarofghosts/html-ls.svg?style=flat)](https://travis-ci.org/jarofghosts/html-ls)
 [![npm install](http://img.shields.io/npm/dm/html-ls.svg?style=flat)](https://www.npmjs.org/package/html-ls)

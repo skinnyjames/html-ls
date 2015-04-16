@@ -21,10 +21,10 @@
     "url": "https://github.com/jarofghosts/html-ls/issues"
   },
   "dependencies": {
-    "through": "2.3.4",
-    "ls-stream": "1.0.0"
+    "ls-stream": "1.0.0",
+    "through2": "^0.6.5"
   },
   "devDependencies": {
-    "tape": "2.12.3"
+    "tape": "^4.0.0"
   }
 }
