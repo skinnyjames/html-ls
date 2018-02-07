@@ -21,7 +21,7 @@
     "url": "https://github.com/jarofghosts/html-ls/issues"
   },
   "dependencies": {
-    "ls-stream": "1.0.0",
+    "ls-stream": "https://github.com/skinnyjames/ls-stream.git#84d1e6b2072768d67e0649be2277bb5f63069b41",
     "through2": "^0.6.5"
   },
   "devDependencies": {

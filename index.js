@@ -48,8 +48,9 @@ function lsHtml(dir, _options) {
       }
 
       var objectName = path.basename(data.path)
+      console.log(data);
 
-      if(data.stat.isDirectory()) {
+      if(!data.error && data.stat.isDirectory()) {
         dirs.push(objectName + '/')
 
         return next()
